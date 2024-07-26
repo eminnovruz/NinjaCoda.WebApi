@@ -14,9 +14,10 @@ public class SubjectService : ISubjectService
         _context = context;
     }
 
-    public Task<bool> AddSubject(Subject dto)
+    public async Task<bool> AddSubject(Subject dto)
     {
-        throw new NotImplementedException();
+        await _context.MainSubjects.AddAsync(dto);
+        return true;
     }
 
     public Task<bool> EditSubject(Subject dto)

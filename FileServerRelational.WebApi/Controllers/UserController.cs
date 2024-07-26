@@ -1,4 +1,5 @@
-﻿using FileServerRelational.WebApi.Services.Abstract;
+﻿using FileServerRelational.WebApi.Models.Sbj;
+using FileServerRelational.WebApi.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FileServerRelational.WebApi.Controllers
@@ -18,6 +19,12 @@ namespace FileServerRelational.WebApi.Controllers
         public IActionResult GetAllSubjects()
         {
             return Ok(subjectService.GetAllSubjects());
+        }
+
+        [HttpPost("AddSubject")]
+        public IActionResult AddSubject(Subject request)
+        {
+            return Ok(subjectService.AddSubject(request));
         }
     }
 }
