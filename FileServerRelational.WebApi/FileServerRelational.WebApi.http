@@ -1,0 +1,6 @@
+@FileServerRelational.WebApi_HostAddress = http://localhost:5064
+
+GET {{FileServerRelational.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
