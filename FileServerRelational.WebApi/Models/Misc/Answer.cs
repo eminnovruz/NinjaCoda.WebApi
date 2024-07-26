@@ -1,5 +1,7 @@
-﻿namespace FileServerRelational.WebApi.Models.Misc;
+﻿using FileServerRelational.WebApi.Models.Common;
 
-public class Answer : 
+namespace FileServerRelational.WebApi.Models.Misc;
+
+public class Answer : BaseEntity 
 {
 }

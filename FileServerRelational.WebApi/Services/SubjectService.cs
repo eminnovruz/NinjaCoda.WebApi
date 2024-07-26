@@ -1,5 +1,4 @@
 ﻿using FileServerRelational.WebApi.ApplicationContext;
-using FileServerRelational.WebApi.DataTransferObj.Dto;
 using FileServerRelational.WebApi.Models.Sbj;
 using FileServerRelational.WebApi.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +14,12 @@ public class SubjectService : ISubjectService
         _context = context;
     }
 
-    public Task<bool> AddSubject(SubjectDto dto)
+    public Task<bool> AddSubject(Subject dto)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> EditSubject(SubjectDto dto)
+    public Task<bool> EditSubject(Subject dto)
     {
         throw new NotImplementedException();
     }

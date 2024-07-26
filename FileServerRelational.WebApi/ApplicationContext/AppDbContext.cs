@@ -12,12 +12,14 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Subject>().ToContainer("MainSubjects");
+        modelBuilder.Entity<Subject>().ToContainer("Subjects");
         modelBuilder.Entity<Question>().ToContainer("Questions");
+        modelBuilder.Entity<Answer>().ToContainer("Answers");
 
         base.OnModelCreating(modelBuilder);
     }
 
     public DbSet<Subject> MainSubjects { get; set; }
     public DbSet<Question> Questions { get; set; }
+    public DbSet<Answer> Answers { get; set; }
 }
