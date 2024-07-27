@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Subject>().ToContainer("Subjects");
         modelBuilder.Entity<Question>().ToContainer("Questions");
         modelBuilder.Entity<Answer>().ToContainer("Answers");
+        modelBuilder.Entity<GeneralSalary>().ToContainer("Salaries");
 
         base.OnModelCreating(modelBuilder);
     }
@@ -22,4 +23,5 @@ public class AppDbContext : DbContext
     public DbSet<Subject> MainSubjects { get; set; }
     public DbSet<Question> Questions { get; set; }
     public DbSet<Answer> Answers { get; set; }
+    public DbSet<GeneralSalary> Salaries { get; set; }
 }

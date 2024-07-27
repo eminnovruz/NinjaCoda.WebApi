@@ -17,6 +17,7 @@ public class SubjectService : ISubjectService
     public async Task<bool> AddSubject(Subject dto)
     {
         await _context.MainSubjects.AddAsync(dto);
+        await _context.SaveChangesAsync();
         return true;
     }
 
