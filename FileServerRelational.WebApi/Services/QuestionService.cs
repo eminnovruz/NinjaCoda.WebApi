@@ -21,6 +21,21 @@ namespace FileServerRelational.WebApi.Services
             _context = context;
         }
 
+        public IEnumerable<QuestionViewResponse> GetAllQuestions()
+        {
+            return _context.Questions.Select(x => new QuestionViewResponse
+            {
+                Source = x.Source,
+                SubjectId = x.SubjectId,
+                AnswerIds = x.AnswerIds,
+                CorrectAnswerCount = x.CorrectAnswerCount,
+                Id = x.Id,
+                QuestionDocsLink =  x.QuestionDocsLink,
+                Title = x.Title,
+            });
+        }
+
+
         public async Task<bool> AddQuestionToSubject(AddQuestionToSubjectRequest request)
         {
             Question newQuestion = new Question
@@ -73,6 +88,22 @@ namespace FileServerRelational.WebApi.Services
             }
 
             return questions;
+        }
+
+        public async Task<bool> RemoveQuestion(string questionId)
+        {
+            var question = _context.Questions.FirstOrDefault(x => x.Id == questionId);
+
+            var subject = _context.Subjects.FirstOrDefault(x => x.Id == question.SubjectId);
+
+            subject.QuestionIds.Remove(question.Id);
+
+            _context.Questions.Remove(question);
+
+            _context.Update(subject);
+
+            var result = await _context.SaveChangesAsync();
+            return result == 1;
         }
     }
 }

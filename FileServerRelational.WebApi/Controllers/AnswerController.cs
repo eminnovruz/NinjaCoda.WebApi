@@ -1,4 +1,5 @@
 ﻿using FileServerRelational.WebApi.DataTransferObject.Requests;
+using FileServerRelational.WebApi.Services;
 using FileServerRelational.WebApi.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,22 +8,21 @@ namespace FileServerRelational.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class QuestionController : ControllerBase
+    public class AnswerController : ControllerBase
     {
-        private readonly IQuestionService _questionService;
+        private readonly IAnswerService _answerService;
 
-        public QuestionController(IQuestionService questionService)
+        public AnswerController(IAnswerService answerService)
         {
-            _questionService = questionService;
+            _answerService = answerService;
         }
 
-
-        [HttpGet("ViewAllQuestions")]
-        public IActionResult GetAllQuestions()
+        [HttpGet("ViewAllAnswers")]
+        public IActionResult ViewAllAnswers()
         {
             try
             {
-                return Ok(_questionService.GetAllQuestions());
+                return Ok(_answerService.GetAllAnswers());
             }
             catch (Exception exception)
             {
@@ -30,12 +30,12 @@ namespace FileServerRelational.WebApi.Controllers
             }
         }
 
-        [HttpGet("GetSubjectQuestions")]
-        public IActionResult GetAllSubjectQuestionsAsync(string subjectId)
+        [HttpGet("GetQuestionAnswers")]
+        public IActionResult GetQuestionAnswers(string questionId)
         {
             try
             {
-                return Ok(_questionService.GetAllSubjectRelatedQuestions(subjectId));
+                return Ok(_answerService.GetQuestionRelatedAnswers(questionId));
             }
             catch (Exception exception)
             {
@@ -43,12 +43,12 @@ namespace FileServerRelational.WebApi.Controllers
             }
         }
 
-        [HttpPost("AddQuestionToSubject")]
-        public async Task<IActionResult> AddQuestionToSubject(AddQuestionToSubjectRequest request)
+        [HttpPost("AddAnswerToQuestion")]
+        public async Task<IActionResult> AddAnswerToQuestion(AddAnswerToQuestionRequest request)
         {
             try
             {
-                return Ok(await _questionService.AddQuestionToSubject(request));
+                return Ok(await _answerService.AddAnswerToQuestion(request));
             }
             catch (Exception exception)
             {
@@ -56,12 +56,12 @@ namespace FileServerRelational.WebApi.Controllers
             }
         }
 
-        [HttpDelete("RemoveQuestion")]
-        public async Task<IActionResult> RemoveQuestion(string questionId)
+        [HttpDelete("RemoveAnswer")]
+        public async Task<IActionResult> RemoveAnswer(string answerId)
         {
             try
             {
-                return Ok(await _questionService.RemoveQuestion(questionId));
+                return Ok(await _answerService.RemoveAnswer(answerId));
             }
             catch (Exception exception)
             {

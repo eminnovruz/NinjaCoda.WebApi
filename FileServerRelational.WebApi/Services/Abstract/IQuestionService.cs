@@ -7,4 +7,6 @@ public interface IQuestionService
 {
     Task<bool> AddQuestionToSubject(AddQuestionToSubjectRequest request);
     IEnumerable<QuestionViewResponse> GetAllSubjectRelatedQuestions(string subjectId);
+    IEnumerable<QuestionViewResponse> GetAllQuestions();
+    Task<bool> RemoveQuestion(string questionId);
 }
