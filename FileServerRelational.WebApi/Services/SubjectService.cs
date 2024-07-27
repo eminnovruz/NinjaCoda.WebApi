@@ -59,9 +59,19 @@ public class SubjectService : ISubjectService
 
     public async Task<bool> RemoveSubjectAsync(string id)
     {
-        Subject delSubject = _context.Subjects.FirstOrDefault(sbj => sbj.Id == id);
-        EntityEntry<Subject> result = _context.Subjects.Remove(delSubject);
-        await _context.SaveChangesAsync();
-        return result.State == EntityState.Deleted;
+        var subject = await _context.Subjects.FirstOrDefaultAsync(sbj => sbj.Id == id);
+
+        foreach (var item in _context.Questions)
+        {
+            if(item.SubjectId == subject.Id)
+            {
+                _context.Questions.Remove(item);
+            }
+        }
+
+        var result = _context.Subjects.Remove(subject);
+        var saveResult = await _context.SaveChangesAsync();
+
+        return saveResult == 2;
     }
 }
