@@ -17,11 +17,11 @@ namespace FileServerRelational.WebApi.Controllers
         }
 
         [HttpGet("GetAllQuestions")]
-        public async Task<IActionResult> GetAllQuestionsAsync(string subjectId)
+        public IActionResult GetAllQuestionsAsync(string subjectId)
         {
             try
             {
-                return Ok(await _questionService.GetAllSubjectRelatedQuestions(subjectId));
+                return Ok(_questionService.GetAllSubjectRelatedQuestions(subjectId));
             }
             catch (Exception exception)
             {

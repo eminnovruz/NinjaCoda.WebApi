@@ -31,6 +31,7 @@ namespace FileServerRelational.WebApi.Services
                 QuestionDocsLink = request.QuestionDocsLink,
                 CorrectAnswerCount = 0,
                 AnswerIds = new List<string>(),
+                SubjectId = request.SubjectId,
             };
 
             Subject flagSubject = await _context.Subjects
@@ -50,31 +51,28 @@ namespace FileServerRelational.WebApi.Services
             return result == 2; // 1 for Question, 1 for Subject
         }
 
-        public async Task<IEnumerable<QuestionViewResponse>> GetAllSubjectRelatedQuestions(string subjectId)
+        public IEnumerable<QuestionViewResponse> GetAllSubjectRelatedQuestions(string subjectId)
         {
-            Subject subject = await _context.Subjects
-                .Include(s => s.QuestionIds)
-                .FirstOrDefaultAsync(s => s.Id == subjectId);
+            var questions = new List<QuestionViewResponse>();
 
-            if (subject == null)
+            foreach (var item in _context.Questions.ToList())
             {
-                return null;
+                if (item.SubjectId == subjectId)
+                {
+                    questions.Add(new QuestionViewResponse()
+                    {
+                        Id= item.Id,
+                        Title = item.Title,
+                        SubjectId = item.SubjectId,
+                        AnswerIds = item.AnswerIds,
+                        CorrectAnswerCount = item.CorrectAnswerCount,
+                        QuestionDocsLink = item.QuestionDocsLink,
+                        Source = item.Source,
+                    });
+                }
             }
 
-            List<Question> questions = await _context.Questions
-                .Where(q => subject.QuestionIds.Contains(q.Id))
-                .ToListAsync();
-
-            List<QuestionViewResponse> response = questions.Select(q => new QuestionViewResponse
-            {
-                Id = q.Id,
-                Source = q.Source,
-                QuestionDocsLink = q.QuestionDocsLink,
-                CorrectAnswerCount = q.CorrectAnswerCount,
-                AnswerIds = q.AnswerIds
-            }).ToList();
-
-            return response;
+            return questions;
         }
     }
 }

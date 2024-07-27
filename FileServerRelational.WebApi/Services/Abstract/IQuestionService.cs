@@ -6,5 +6,5 @@ namespace FileServerRelational.WebApi.Services.Abstract;
 public interface IQuestionService
 {
     Task<bool> AddQuestionToSubject(AddQuestionToSubjectRequest request);
-    Task<IEnumerable<QuestionViewResponse>> GetAllSubjectRelatedQuestions(string subjectId);
+    IEnumerable<QuestionViewResponse> GetAllSubjectRelatedQuestions(string subjectId);
 }
