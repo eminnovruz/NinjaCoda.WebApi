@@ -16,11 +16,19 @@ namespace FileServerRelational.WebApi.Services
     {
         private readonly AppDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QuestionService"/> class.
+        /// </summary>
+        /// <param name="context">The application database context.</param>
         public QuestionService(AppDbContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Gets all questions.
+        /// </summary>
+        /// <returns>An enumerable collection of question view responses.</returns>
         public IEnumerable<QuestionViewResponse> GetAllQuestions()
         {
             return _context.Questions.Select(x => new QuestionViewResponse
@@ -30,15 +38,19 @@ namespace FileServerRelational.WebApi.Services
                 AnswerIds = x.AnswerIds,
                 CorrectAnswerCount = x.CorrectAnswerCount,
                 Id = x.Id,
-                QuestionDocsLink =  x.QuestionDocsLink,
+                QuestionDocsLink = x.QuestionDocsLink,
                 Title = x.Title,
-            });
+            }).ToList();
         }
 
-
+        /// <summary>
+        /// Adds a new question to a subject.
+        /// </summary>
+        /// <param name="request">The request containing question details.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating success.</returns>
         public async Task<bool> AddQuestionToSubject(AddQuestionToSubjectRequest request)
         {
-            Question newQuestion = new Question
+            var newQuestion = new Question
             {
                 Id = Guid.NewGuid().ToString(),
                 Title = request.Title,
@@ -49,7 +61,7 @@ namespace FileServerRelational.WebApi.Services
                 SubjectId = request.SubjectId,
             };
 
-            Subject flagSubject = await _context.Subjects
+            var flagSubject = await _context.Subjects
                 .FirstOrDefaultAsync(sbj => sbj.Id == request.SubjectId);
 
             if (flagSubject == null)
@@ -62,45 +74,57 @@ namespace FileServerRelational.WebApi.Services
             await _context.Questions.AddAsync(newQuestion);
             _context.Subjects.Update(flagSubject);
 
-            int result = await _context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync();
             return result == 2; // 1 for Question, 1 for Subject
         }
 
+        /// <summary>
+        /// Gets all questions related to a specific subject.
+        /// </summary>
+        /// <param name="subjectId">The ID of the subject.</param>
+        /// <returns>An enumerable collection of question view responses.</returns>
         public IEnumerable<QuestionViewResponse> GetAllSubjectRelatedQuestions(string subjectId)
         {
-            var questions = new List<QuestionViewResponse>();
-
-            foreach (var item in _context.Questions.ToList())
-            {
-                if (item.SubjectId == subjectId)
+            return _context.Questions
+                .Where(x => x.SubjectId == subjectId)
+                .Select(x => new QuestionViewResponse
                 {
-                    questions.Add(new QuestionViewResponse()
-                    {
-                        Id= item.Id,
-                        Title = item.Title,
-                        SubjectId = item.SubjectId,
-                        AnswerIds = item.AnswerIds,
-                        CorrectAnswerCount = item.CorrectAnswerCount,
-                        QuestionDocsLink = item.QuestionDocsLink,
-                        Source = item.Source,
-                    });
-                }
-            }
-
-            return questions;
+                    Id = x.Id,
+                    Title = x.Title,
+                    SubjectId = x.SubjectId,
+                    AnswerIds = x.AnswerIds,
+                    CorrectAnswerCount = x.CorrectAnswerCount,
+                    QuestionDocsLink = x.QuestionDocsLink,
+                    Source = x.Source,
+                }).ToList();
         }
 
+        /// <summary>
+        /// Removes a question.
+        /// </summary>
+        /// <param name="questionId">The ID of the question to remove.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating success.</returns>
         public async Task<bool> RemoveQuestion(string questionId)
         {
-            var question = _context.Questions.FirstOrDefault(x => x.Id == questionId);
+            var question = await _context.Questions
+                .FirstOrDefaultAsync(x => x.Id == questionId);
 
-            var subject = _context.Subjects.FirstOrDefault(x => x.Id == question.SubjectId);
+            if (question == null)
+            {
+                return false;
+            }
+
+            var subject = await _context.Subjects
+                .FirstOrDefaultAsync(x => x.Id == question.SubjectId);
+
+            if (subject == null)
+            {
+                return false;
+            }
 
             subject.QuestionIds.Remove(question.Id);
-
             _context.Questions.Remove(question);
-
-            _context.Update(subject);
+            _context.Subjects.Update(subject);
 
             var result = await _context.SaveChangesAsync();
             return result == 1;

@@ -7,86 +7,112 @@ using FileServerRelational.WebApi.Models.Sbj;
 using FileServerRelational.WebApi.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
 
-namespace FileServerRelational.WebApi.Services;
-
-public class AnswerService : IAnswerService
+namespace FileServerRelational.WebApi.Services
 {
-    private readonly AppDbContext _context;
-
-    public AnswerService(AppDbContext context)
+    public class AnswerService : IAnswerService
     {
-        _context = context;
-    }
+        private readonly AppDbContext _context;
 
-    public async Task<bool> AddAnswerToQuestion(AddAnswerToQuestionRequest request)
-    {
-        Answer newAnswer = new Answer
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AnswerService"/> class.
+        /// </summary>
+        /// <param name="context">The application database context.</param>
+        public AnswerService(AppDbContext context)
         {
-            Id = Guid.NewGuid().ToString(),
-            QuestionId = request.QuestionId,
-            Text = request.Text,
-        };
-
-        Question flagQuestion = await _context.Questions
-            .FirstOrDefaultAsync(sbj => sbj.Id == request.QuestionId);
-
-        if (flagQuestion == null)
-        {
-            return false;
+            _context = context;
         }
 
-        flagQuestion.AnswerIds.Add(newAnswer.Id);
-
-        await _context.Answers.AddAsync(newAnswer);
-        _context.Questions.Update(flagQuestion);
-
-        int result = await _context.SaveChangesAsync();
-        return result == 2; // 1 for Question, 1 for Subject
-    }
-
-    public IEnumerable<ViewAnswerResponse> GetAllAnswers()
-    {
-        return _context.Answers.Select(x => new ViewAnswerResponse
+        /// <summary>
+        /// Adds a new answer to a question.
+        /// </summary>
+        /// <param name="request">The request containing answer details.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating success.</returns>
+        public async Task<bool> AddAnswerToQuestion(AddAnswerToQuestionRequest request)
         {
-            Id = x.Id,
-            QuestionId = x.QuestionId,
-            Text = x.Text,
-        });
-    }
-
-    public IEnumerable<ViewAnswerResponse> GetQuestionRelatedAnswers(string questionId)
-    {
-        var answers = new List<ViewAnswerResponse>();
-
-        foreach (var item in _context.Answers.ToList())
-        {
-            if (item.QuestionId == questionId)
+            var newAnswer = new Answer
             {
-                answers.Add(new ViewAnswerResponse()
-                {
-                    Id = item.Id,
-                    QuestionId = item.QuestionId,
-                    Text = item.Text,
-                });
+                Id = Guid.NewGuid().ToString(),
+                QuestionId = request.QuestionId,
+                Text = request.Text,
+            };
+
+            var flagQuestion = await _context.Questions
+                .FirstOrDefaultAsync(sbj => sbj.Id == request.QuestionId);
+
+            if (flagQuestion == null)
+            {
+                return false;
             }
+
+            flagQuestion.AnswerIds.Add(newAnswer.Id);
+
+            await _context.Answers.AddAsync(newAnswer);
+            _context.Questions.Update(flagQuestion);
+
+            var result = await _context.SaveChangesAsync();
+            return result == 2; // 1 for Question, 1 for Answer
         }
 
-        return answers;
-    }
+        /// <summary>
+        /// Gets all answers.
+        /// </summary>
+        /// <returns>An enumerable collection of answer responses.</returns>
+        public IEnumerable<ViewAnswerResponse> GetAllAnswers()
+        {
+            return _context.Answers.Select(x => new ViewAnswerResponse
+            {
+                Id = x.Id,
+                QuestionId = x.QuestionId,
+                Text = x.Text,
+            }).ToList();
+        }
 
-    public async Task<bool> RemoveAnswer(string answerId)
-    {
-        var answer = _context.Answers.FirstOrDefault(x => x.Id == answerId);
+        /// <summary>
+        /// Gets answers related to a specific question.
+        /// </summary>
+        /// <param name="questionId">The ID of the question.</param>
+        /// <returns>An enumerable collection of answer responses.</returns>
+        public IEnumerable<ViewAnswerResponse> GetQuestionRelatedAnswers(string questionId)
+        {
+            return _context.Answers
+                .Where(x => x.QuestionId == questionId)
+                .Select(x => new ViewAnswerResponse
+                {
+                    Id = x.Id,
+                    QuestionId = x.QuestionId,
+                    Text = x.Text,
+                }).ToList();
+        }
 
-        var question = _context.Questions.FirstOrDefault(x => x.Id == answer.QuestionId);
+        /// <summary>
+        /// Removes an answer.
+        /// </summary>
+        /// <param name="answerId">The ID of the answer to remove.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating success.</returns>
+        public async Task<bool> RemoveAnswer(string answerId)
+        {
+            var answer = await _context.Answers
+                .FirstOrDefaultAsync(x => x.Id == answerId);
 
-        question.AnswerIds.Remove(answer.Id);
+            if (answer == null)
+            {
+                return false;
+            }
 
-        _context.Answers.Remove(answer);
+            var question = await _context.Questions
+                .FirstOrDefaultAsync(x => x.Id == answer.QuestionId);
 
-        _context.Update(question);
+            if (question == null)
+            {
+                return false;
+            }
 
-        var result = await _context.SaveChangesAsync();
-        return result == 1;
+            question.AnswerIds.Remove(answer.Id);
+            _context.Answers.Remove(answer);
+            _context.Questions.Update(question);
+
+            var result = await _context.SaveChangesAsync();
+            return result == 1;
+        }
     }
 }
