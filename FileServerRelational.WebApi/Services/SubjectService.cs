@@ -1,7 +1,9 @@
 ﻿using FileServerRelational.WebApi.ApplicationContext;
+using FileServerRelational.WebApi.DataTransferObject.Requests;
 using FileServerRelational.WebApi.Models.Sbj;
 using FileServerRelational.WebApi.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FileServerRelational.WebApi.Services;
 
@@ -14,11 +16,21 @@ public class SubjectService : ISubjectService
         _context = context;
     }
 
-    public async Task<bool> AddSubject(Subject dto)
+    public async Task<bool> AddSubject(AddSubjectRequest dto)
     {
-        await _context.MainSubjects.AddAsync(dto);
-        await _context.SaveChangesAsync();
-        return true;
+        var newSubject = new Subject()
+        {
+            Id = Guid.NewGuid().ToString(),
+            Title = dto.Title,
+            Description = dto.Description,
+            GeneralAbout = dto.GeneralAbout,
+            DocsLink = dto.DocsLink,
+            SalaryId = dto.SalaryId,
+            QuestionIds = new List<string>(),
+        };
+
+        var actionResult = await _context.MainSubjects.AddAsync(newSubject);
+        return actionResult.State == EntityState.Added;
     }
 
     public Task<bool> EditSubject(Subject dto)
@@ -28,7 +40,7 @@ public class SubjectService : ISubjectService
 
     public IEnumerable<Subject> GetAllSubjects()
     {
-        return _context.MainSubjects.ToList();
+        throw new NotImplementedException();
     }
 
     public Task<bool> RemoveSubject(string id)
