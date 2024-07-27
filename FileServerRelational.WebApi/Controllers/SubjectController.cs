@@ -28,5 +28,18 @@ namespace FileServerRelational.WebApi.Controllers
                 throw new Exception(exception.Message);
             }
         }
+
+        [HttpGet("GetAllSubjects")]
+        public IActionResult GetAllSubjects()
+        {
+            try
+            {
+                return Ok(_subjectService.GetAllSubjects());
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

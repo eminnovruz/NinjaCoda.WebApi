@@ -1,5 +1,6 @@
 ﻿using FileServerRelational.WebApi.ApplicationContext;
 using FileServerRelational.WebApi.DataTransferObject.Requests;
+using FileServerRelational.WebApi.DataTransferObject.Responses;
 using FileServerRelational.WebApi.Models.Sbj;
 using FileServerRelational.WebApi.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
@@ -26,13 +27,13 @@ public class SubjectService : ISubjectService
             GeneralAbout = dto.GeneralAbout,
             DocsLink = dto.DocsLink,
             QuestionIds = new List<string>(),
-            SalaryId = "555"
+            SalaryId = "key_undefined"
         };
 
         EntityEntry<Subject> actionResult = await _context.Subjects.AddAsync(newSubject);
         await _context.SaveChangesAsync();
 
-        return actionResult.State == EntityState.Added;
+        return actionResult.State == EntityState.Unchanged; // should be changed , can be uncorrect 
     }
 
     public Task<bool> EditSubject(Subject dto)
@@ -40,9 +41,20 @@ public class SubjectService : ISubjectService
         throw new NotImplementedException();
     }
 
-    public IEnumerable<Subject> GetAllSubjects()
+    public IEnumerable<ViewSubjectResponse> GetAllSubjects()
     {
-        throw new NotImplementedException();
+        List<Subject> subjects = _context.Subjects.ToList();
+
+        return subjects.Select(sbj => new ViewSubjectResponse()
+        {
+            Description = sbj.Description,
+            Id = sbj.Id,
+            SalaryId = sbj.SalaryId,
+            DocsLink = sbj.DocsLink,
+            GeneralAbout = sbj.GeneralAbout,
+            QuestionIds = sbj.QuestionIds,
+            Title = sbj.Title,
+        });
     }
 
     public Task<bool> RemoveSubject(string id)
