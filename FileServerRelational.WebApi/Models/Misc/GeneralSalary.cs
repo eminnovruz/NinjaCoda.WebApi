@@ -2,7 +2,7 @@
 
 namespace FileServerRelational.WebApi.Models.Misc;
 
-public class GeneralSalary : BaseEntity
+public class Salary : BaseEntity
 {
     public int JuniorSalary { get; set; }
     public int MiddleSalary { get; set; }

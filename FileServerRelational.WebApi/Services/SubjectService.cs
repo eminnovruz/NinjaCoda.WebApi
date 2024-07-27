@@ -25,11 +25,13 @@ public class SubjectService : ISubjectService
             Description = dto.Description,
             GeneralAbout = dto.GeneralAbout,
             DocsLink = dto.DocsLink,
-            SalaryId = dto.SalaryId,
             QuestionIds = new List<string>(),
+            SalaryId = "555"
         };
 
-        var actionResult = await _context.MainSubjects.AddAsync(newSubject);
+        EntityEntry<Subject> actionResult = await _context.Subjects.AddAsync(newSubject);
+        await _context.SaveChangesAsync();
+
         return actionResult.State == EntityState.Added;
     }
 

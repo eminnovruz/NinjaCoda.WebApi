@@ -1,4 +1,5 @@
-﻿using FileServerRelational.WebApi.Services.Abstract;
+﻿using FileServerRelational.WebApi.DataTransferObject.Requests;
+using FileServerRelational.WebApi.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,24 +9,23 @@ namespace FileServerRelational.WebApi.Controllers
     [ApiController]
     public class SubjectController : ControllerBase
     {
-        private readonly ISubjectService subjectService;
+        private readonly ISubjectService _subjectService;
 
         public SubjectController(ISubjectService subjectService)
         {
-            this.subjectService = subjectService;
+            _subjectService = subjectService;
         }
 
         [HttpPost("AddNewSubject")]
-        public IActionResult AddNewSubject()
+        public async Task<IActionResult> AddNewSubjectAsync(AddSubjectRequest request)
         {
             try
             {
-
+                return Ok(await _subjectService.AddSubject(request));
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-
-                throw;
+                throw new Exception(exception.Message);
             }
         }
     }
