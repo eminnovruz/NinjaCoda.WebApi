@@ -17,7 +17,7 @@ public class SubjectService : ISubjectService
         _context = context;
     }
 
-    public async Task<bool> AddSubject(AddSubjectRequest dto)
+    public async Task<bool> AddSubjectAsync(AddSubjectRequest dto)
     {
         var newSubject = new Subject()
         {
@@ -57,8 +57,11 @@ public class SubjectService : ISubjectService
         });
     }
 
-    public Task<bool> RemoveSubject(string id)
+    public async Task<bool> RemoveSubjectAsync(string id)
     {
-        throw new NotImplementedException();
+        Subject delSubject = _context.Subjects.FirstOrDefault(sbj => sbj.Id == id);
+        EntityEntry<Subject> result = _context.Subjects.Remove(delSubject);
+        await _context.SaveChangesAsync();
+        return result.State == EntityState.Deleted;
     }
 }

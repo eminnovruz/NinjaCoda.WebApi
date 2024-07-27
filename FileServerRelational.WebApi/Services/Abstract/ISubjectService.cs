@@ -7,7 +7,7 @@ namespace FileServerRelational.WebApi.Services.Abstract;
 public interface ISubjectService
 {
     IEnumerable<ViewSubjectResponse> GetAllSubjects();
-    Task<bool> AddSubject(AddSubjectRequest dto);
-    Task<bool> RemoveSubject(string id);
+    Task<bool> AddSubjectAsync(AddSubjectRequest dto);
+    Task<bool> RemoveSubjectAsync(string id);
     Task<bool> EditSubject(Subject dto);
 }

@@ -21,7 +21,7 @@ namespace FileServerRelational.WebApi.Controllers
         {
             try
             {
-                return Ok(await _subjectService.AddSubject(request));
+                return Ok(await _subjectService.AddSubjectAsync(request));
             }
             catch (Exception exception)
             {
@@ -35,6 +35,19 @@ namespace FileServerRelational.WebApi.Controllers
             try
             {
                 return Ok(_subjectService.GetAllSubjects());
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
+
+        [HttpDelete("RemoveSubjectById")]
+        public async Task<IActionResult> RemoveSubjectByIdAsync(string subjectId)
+        {
+            try
+            {
+                return Ok(await _subjectService.RemoveSubjectAsync(subjectId));
             }
             catch (Exception exception)
             {
