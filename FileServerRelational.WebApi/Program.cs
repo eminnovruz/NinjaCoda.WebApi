@@ -11,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ISubjectService, SubjectService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
 
 var cosmos = new CosmosConfiguration();
 builder.Configuration.GetSection("Cosmos").Bind(cosmos);

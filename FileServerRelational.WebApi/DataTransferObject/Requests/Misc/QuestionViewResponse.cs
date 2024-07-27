@@ -1,9 +1,8 @@
-﻿using FileServerRelational.WebApi.Models.Common;
+﻿namespace FileServerRelational.WebApi.DataTransferObject.Requests.Misc;
 
-namespace FileServerRelational.WebApi.Models.Misc;
-
-public class Question : BaseEntity
+public class QuestionViewResponse
 {
+    public string Id { get; set; }
     public string SubjectId { get; set; }
     public string Title { get; set; }
     public List<string> AnswerIds { get; set; }

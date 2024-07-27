@@ -2,7 +2,7 @@
 
 public class AddQuestionToSubjectRequest
 {
-    public string SubjectName { get; set; }
+    public string SubjectId { get; set; }
     public string Title { get; set; }
     public string QuestionDocsLink { get; set; }
     public string Source { get; set; }
