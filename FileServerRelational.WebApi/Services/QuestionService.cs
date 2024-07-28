@@ -40,6 +40,7 @@ namespace FileServerRelational.WebApi.Services
                 Id = x.Id,
                 QuestionDocsLink = x.QuestionDocsLink,
                 Title = x.Title,
+                Level = x.QuestionLevel
             }).ToList();
         }
 
