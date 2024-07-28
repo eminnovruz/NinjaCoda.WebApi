@@ -53,6 +53,7 @@ namespace FileServerRelational.WebApi.Services
             var newQuestion = new Question
             {
                 Id = Guid.NewGuid().ToString(),
+                QuestionLevel = request.QuestionLevel,
                 Title = request.Title,
                 Source = request.Source,
                 QuestionDocsLink = request.QuestionDocsLink,
@@ -96,6 +97,7 @@ namespace FileServerRelational.WebApi.Services
                     CorrectAnswerCount = x.CorrectAnswerCount,
                     QuestionDocsLink = x.QuestionDocsLink,
                     Source = x.Source,
+                    Level = x.QuestionLevel,
                 }).ToList();
         }
 
@@ -128,6 +130,20 @@ namespace FileServerRelational.WebApi.Services
 
             var result = await _context.SaveChangesAsync();
             return result == 1;
+        }
+
+        public IEnumerable<QuestionViewResponse> GetAllLevelRelatedQuestions(string level)
+        {
+            return _context.Questions.Where(question => question.QuestionLevel == level).Select(question => new QuestionViewResponse()
+            {
+                Source = question.Source,
+                SubjectId = question.SubjectId,
+                AnswerIds = question.AnswerIds,
+                CorrectAnswerCount = question.CorrectAnswerCount,
+                Id = question.Id,
+                QuestionDocsLink = question.QuestionDocsLink,
+                Title = question.Title,
+            });
         }
     }
 }

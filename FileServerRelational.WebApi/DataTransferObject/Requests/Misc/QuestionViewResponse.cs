@@ -8,5 +8,6 @@ public class QuestionViewResponse
     public List<string> AnswerIds { get; set; }
     public int CorrectAnswerCount { get; set; }
     public string QuestionDocsLink { get; set; }
+    public string Level { get; set; }
     public string Source { get; set; }
 }

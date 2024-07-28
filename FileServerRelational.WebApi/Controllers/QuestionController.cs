@@ -107,5 +107,18 @@ namespace FileServerRelational.WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
             }
         }
+
+        [HttpGet("GetAllLevelRelatedQuestions")]
+        public IActionResult GetAllLevelRelatedQuestions(string level)
+        {
+            try
+            {
+                return Ok(_questionService.GetAllLevelRelatedQuestions(level));
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
+            }
+        }
     }
 }

@@ -9,4 +9,5 @@ public interface IQuestionService
     IEnumerable<QuestionViewResponse> GetAllSubjectRelatedQuestions(string subjectId);
     IEnumerable<QuestionViewResponse> GetAllQuestions();
     Task<bool> RemoveQuestion(string questionId);
+    IEnumerable<QuestionViewResponse> GetAllLevelRelatedQuestions(string level);
 }
