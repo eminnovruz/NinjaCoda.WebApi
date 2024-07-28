@@ -2,6 +2,7 @@ using FileServerRelational.WebApi.ApplicationContext;
 using FileServerRelational.WebApi.Services;
 using FileServerRelational.WebApi.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,12 @@ builder.Services.AddScoped<IAnswerService, AnswerService>();
 var cosmos = new CosmosConfiguration();
 builder.Configuration.GetSection("Cosmos").Bind(cosmos);
 builder.Services.AddDbContext<AppDbContext>(op => op.UseCosmos(cosmos.Uri, cosmos.Key, cosmos.DatabaseName));
+
+var log = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    //.WriteTo.File() optional
+    .CreateLogger();
 
 var app = builder.Build();
 

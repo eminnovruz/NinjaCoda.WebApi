@@ -2,6 +2,7 @@
 using FileServerRelational.WebApi.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System;
 using System.Threading.Tasks;
 
@@ -38,6 +39,7 @@ namespace FileServerRelational.WebApi.Controllers
             catch (Exception exception)
             {
                 // Log the exception (not shown here for brevity)
+                Log.Error("exception log subject controller: " + exception.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
             }
         }
@@ -57,6 +59,7 @@ namespace FileServerRelational.WebApi.Controllers
             catch (Exception exception)
             {
                 // Log the exception (not shown here for brevity)
+                Log.Error("exception log subject controller: " + exception.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
             }
         }
@@ -77,6 +80,7 @@ namespace FileServerRelational.WebApi.Controllers
             catch (Exception exception)
             {
                 // Log the exception (not shown here for brevity)
+                Log.Error("exception log subject controller: " + exception.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, exception.Message);
             }
         }
