@@ -5,9 +5,6 @@ using FileServerRelational.WebApi.Models.Sbj;
 using FileServerRelational.WebApi.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FileServerRelational.WebApi.Services
 {
